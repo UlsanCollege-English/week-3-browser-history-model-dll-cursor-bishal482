@@ -1,29 +1,29 @@
-
-### `/src/history.py` (starter)
-
-class _N:
-    __slots__ = ("url", "prev", "next")
-    def __init__(self, url):
-        self.url = url
-        self.prev = None
-        self.next = None
-
 class BrowserHistory:
     def __init__(self):
-        self.head = None
-        self.tail = None
-        self.cur = None
-
-    def current(self):
-        ...
+        self.history = []
+        self.current_index = -1
 
     def visit(self, url):
-        """If not at the end, drop all forward entries, then append url and move cursor."""
-        ...
+        """Adds a new URL to the history, truncating forward history."""
+        # Truncate any forward history
+        self.history = self.history[:self.current_index + 1]
+        self.history.append(url)
+        self.current_index += 1
 
-    def back(self, steps=1):
-        ...
+    def back(self):
+        """Moves back one step in the history."""
+        if self.current_index > 0:
+            self.current_index -= 1
+        return self.current()
 
-    def forward(self, steps=1):
-        ...
-    
+    def forward(self):
+        """Moves forward one step in the history."""
+        if self.current_index < len(self.history) - 1:
+            self.current_index += 1
+        return self.current()
+
+    def current(self):
+        """Returns the current URL."""
+        if self.current_index == -1:
+            return None
+        return self.history[self.current_index]
